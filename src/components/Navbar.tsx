@@ -4,7 +4,7 @@ import { useState } from "react";
 import navMenu from "../constants/navMenu";
 import Logo from "./Logo";
 
-const Navbar = () => {
+const Navbar = ({ user }: { user: boolean }) => {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? "bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-blue-700 md:p-0 rounded"
@@ -63,13 +63,15 @@ const Navbar = () => {
             id="mobile-menu-3"
           >
             <ul className="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
-              {navMenu.map(({ label, route }) => (
-                <li key={route}>
-                  <NavLink to={route} className={navLinkClass}>
-                    {label}
-                  </NavLink>
-                </li>
-              ))}
+              {navMenu
+                .filter(({ auth }) => (user ? auth : !auth))
+                .map(({ label, route }) => (  
+                  <li key={route}>
+                    <NavLink to={route} className={navLinkClass}>
+                      {label}
+                    </NavLink>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>

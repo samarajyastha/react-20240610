@@ -1,7 +1,9 @@
 import Routes from "./Routes";
 
 function App() {
-  return <Routes />;
+  const user = false;
+
+  return <Routes user={user} />;
 }
 
 export default App;
