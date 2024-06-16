@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import navMenu from "../constants/navMenu";
 import Logo from "./Logo";
+import { logout } from "../api/auth";
 
 const Navbar = ({ user }: { user: boolean }) => {
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -15,7 +16,7 @@ const Navbar = ({ user }: { user: boolean }) => {
   return (
     <nav className="border-gray-200 mb-10 py-4 px-5">
       <div className="w-full mx-auto">
-        <div className="mx-2 flex flex-wrap items-center justify-between">
+        <div className="mx-2 flex flex-wrap items-center justify-between ">
           <Logo />
           <div className="flex md:hidden md:order-2">
             <button
@@ -62,16 +63,26 @@ const Navbar = ({ user }: { user: boolean }) => {
             }`}
             id="mobile-menu-3"
           >
-            <ul className="flex-col md:flex-row flex md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
+            <ul className="flex-col md:flex-row flex items-center md:space-x-8 mt-4 md:mt-0 md:text-sm md:font-medium">
               {navMenu
                 .filter(({ auth }) => (user ? auth : !auth))
-                .map(({ label, route }) => (  
+                .map(({ label, route }) => (
                   <li key={route}>
                     <NavLink to={route} className={navLinkClass}>
                       {label}
                     </NavLink>
                   </li>
                 ))}
+              {user ? (
+                <li>
+                  <button
+                    className="bg-blue-700 text-white py-2 px-5 rounded-3xl"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              ) : null}
             </ul>
           </div>
         </div>

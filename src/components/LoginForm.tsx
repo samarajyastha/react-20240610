@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../constants/regex";
 import { Link } from "react-router-dom";
+import { login } from "../api/auth";
+import { useState } from "react";
 
 type LoginFormType = {
   email: string;
@@ -8,14 +10,26 @@ type LoginFormType = {
 };
 
 const LoginForm = () => {
-  const { register, handleSubmit, formState } = useForm<LoginFormType>({
-    mode: "all",
-  });
+  const [loading, setLoading] = useState(false);
+
+  const { register, handleSubmit, formState, setError } =
+    useForm<LoginFormType>({
+      mode: "all",
+    });
 
   const { errors } = formState;
 
-  const onSubmit = (data: LoginFormType) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormType) => {
+    setLoading(true);
+
+    try {
+      await login(data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setError("root", { message: error.response.data });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,13 +79,18 @@ const LoginForm = () => {
       <div className="mt-5">
         <input
           type="submit"
-          value="Login"
+          value={loading ? "Submitting..." : "LOGIN"}
           className="bg-blue-500 w-full py-2 rounded-lg hover:bg-blue-600 text-white cursor-pointer"
         />
       </div>
+      <div className="text-center">
+        <p className="text-red-600 mt-2 text-sm ml-1">{errors.root?.message}</p>
+      </div>
       <div className="mt-8 text-sm text-center">
         <span className="mr-1">Don't have an account?</span>
-        <Link to="/register" className="text-blue-500">Register</Link>
+        <Link to="/register" className="text-blue-500">
+          Register
+        </Link>
       </div>
     </form>
   );
