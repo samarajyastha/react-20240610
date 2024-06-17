@@ -3,9 +3,15 @@ import { useState } from "react";
 
 import navMenu from "../constants/navMenu";
 import Logo from "./Logo";
-import { logout } from "../api/auth";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/auth/authSlice";
 
 const Navbar = ({ user }: { user: boolean }) => {
+  const dispatch = useDispatch();
+
+  const logoutUser = () => {
+    dispatch(logout());
+  };
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? "bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-blue-700 md:p-0 rounded"
@@ -77,7 +83,7 @@ const Navbar = ({ user }: { user: boolean }) => {
                 <li>
                   <button
                     className="bg-blue-700 text-white py-2 px-5 rounded-3xl"
-                    onClick={logout}
+                    onClick={logoutUser}
                   >
                     Logout
                   </button>

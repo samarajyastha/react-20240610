@@ -1,35 +1,24 @@
 import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../constants/regex";
 import { Link } from "react-router-dom";
-import { login } from "../api/auth";
-import { useState } from "react";
-
-type LoginFormType = {
-  email: string;
-  password: string;
-};
+import { loginUser } from "../redux/auth/authActions";
+import { useDispatch, useSelector } from "react-redux";
+import { LoginInput } from "../types/auth";
+import { AppDispatch, RootState } from "../redux/store";
 
 const LoginForm = () => {
-  const [loading, setLoading] = useState(false);
-
-  const { register, handleSubmit, formState, setError } =
-    useForm<LoginFormType>({
-      mode: "all",
-    });
+  const { register, handleSubmit, formState } = useForm<LoginInput>({
+    mode: "all",
+  });
 
   const { errors } = formState;
 
-  const onSubmit = async (data: LoginFormType) => {
-    setLoading(true);
+  const dispatch = useDispatch<AppDispatch>();
 
-    try {
-      await login(data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setError("root", { message: error.response.data });
-    } finally {
-      setLoading(false);
-    }
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+
+  const onSubmit = async (data: LoginInput) => {
+    dispatch(loginUser(data));
   };
 
   return (
@@ -84,7 +73,7 @@ const LoginForm = () => {
         />
       </div>
       <div className="text-center">
-        <p className="text-red-600 mt-2 text-sm ml-1">{errors.root?.message}</p>
+        <p className="text-red-600 mt-2 text-sm ml-1">{error}</p>
       </div>
       <div className="mt-8 text-sm text-center">
         <span className="mr-1">Don't have an account?</span>
