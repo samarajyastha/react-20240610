@@ -1,9 +1,25 @@
 import { Link } from "react-router-dom";
 
 import ProductsTable from "../../components/ProductsTable";
-import products from "../../data/products.json";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { useEffect } from "react";
+import { getAllProducts } from "../../redux/products/productActions";
+import { RootState } from "../../redux/rootReducer";
 
 const ProductList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { loading, products, error } = useSelector(
+    (state: RootState) => state.product
+  );
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+
   return (
     <div className="container">
       <div className="mt-10 mx-12 flex justify-between">
@@ -13,7 +29,11 @@ const ProductList = () => {
         </div>
       </div>
 
-      <ProductsTable data={products} />
+      {error ? (
+        <div className="text-center mt-10">{error}</div>
+      ) : (
+        <ProductsTable data={products} />
+      )}
     </div>
   );
 };
