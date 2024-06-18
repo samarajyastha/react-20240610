@@ -1,13 +1,29 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./auth/authSlice";
+import { persistStore, persistReducer, REGISTER, PERSIST } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+import rootReducer from "./rootReducer";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["auth"],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-  },
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [REGISTER, PERSIST],
+      },
+    }),
 });
 
-export default store;
+const persistor = persistStore(store);
+
+export { persistor, store };
 
 // Get the type of our store variable
 export type AppStore = typeof store;
