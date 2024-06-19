@@ -1,24 +1,17 @@
 import { Link } from "react-router-dom";
 
 import ProductsTable from "../../components/ProductsTable";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { useEffect } from "react";
 import { getAllProducts } from "../../redux/products/productActions";
-import { RootState } from "../../redux/rootReducer";
 
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, products, error } = useSelector(
-    (state: RootState) => state.product
-  );
-
   useEffect(() => {
-    dispatch(getAllProducts());
+    dispatch(getAllProducts({}));
   }, [dispatch]);
-
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   return (
     <div className="container">
@@ -29,11 +22,7 @@ const ProductList = () => {
         </div>
       </div>
 
-      {error ? (
-        <div className="text-center mt-10">{error}</div>
-      ) : (
-        <ProductsTable data={products} />
-      )}
+      <ProductsTable />
     </div>
   );
 };

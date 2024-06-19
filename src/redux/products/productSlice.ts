@@ -1,23 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Product } from "../../types/product";
+import { Product, ProductQuery } from "../../types/product";
 import { getAllProducts } from "./productActions";
 
 type ProductState = {
   loading: boolean;
   error: string | null;
   products: Product[];
+  query: ProductQuery;
 };
 
 const initialState: ProductState = {
   loading: false,
   error: null,
   products: [],
+  query: {},
 };
 
 export const productSlice = createSlice({
   name: "products",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    sort: (state, action) => {
+      state.query.sort = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllProducts.pending, (state) => {
@@ -34,5 +40,7 @@ export const productSlice = createSlice({
       });
   },
 });
+
+export const { sort } = productSlice.actions;
 
 export default productSlice.reducer;
