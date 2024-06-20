@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { registerUser } from "../redux/auth/authActions";
+import { ToastContainer, toast } from "react-toastify";
+import { useEffect } from "react";
 
 type RegisterFormType = {
   name: string;
@@ -30,8 +32,17 @@ const RegisterForm = () => {
     dispatch(registerUser(data));
   };
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error, {
+        autoClose: 1000,
+      });
+    }
+  }, [error]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <ToastContainer />
       <div className="py-2">
         <label htmlFor="name" className="ml-2 text-sm font-semibold">
           Name
@@ -119,9 +130,6 @@ const RegisterForm = () => {
           value={loading ? "Submitting..." : "REGISTER"}
           className="bg-blue-500 w-full py-2 rounded-lg hover:bg-blue-600 text-white cursor-pointer"
         />
-      </div>
-      <div className="text-center">
-        <p className="text-red-600 mt-2 text-sm ml-1">{error}</p>
       </div>
       <div className="mt-8 text-sm text-center">
         <span className="mr-1">Already have an account?</span>

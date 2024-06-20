@@ -1,10 +1,9 @@
-import axios from "axios";
-import config from "../config/config";
-import { ProductQuery } from "../types/product";
+import { Product, ProductQuery } from "../types/product";
+import api from "./api";
 
 const getAll = async ({
   limit = 10,
-  sort = { createAt: -1 },
+  sort = { createdAt: -1 },
   filters = {},
   offset = 0,
 }: ProductQuery) => {
@@ -12,9 +11,15 @@ const getAll = async ({
     sort
   )}&filters=${JSON.stringify(filters)}`;
 
-  const response = axios.get(`${config.apiUrl}/api/products?${queryParams}`);
+  const response = api.get(`/products?${queryParams}`);
 
   return response;
 };
 
-export { getAll };
+const create = async (data: Product) => {
+  const createdProduct = await api.post(`/products`, data);
+
+  return createdProduct;
+};
+
+export { getAll, create };
