@@ -59,9 +59,8 @@ export const productSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
+      .addCase(deleteProduct.fulfilled, (state) => {
         state.loading = false;
-        // state.products = state.products.filter(product=> product.id !=)
         state.success = true;
       })
       .addCase(deleteProduct.rejected, (state, action) => {

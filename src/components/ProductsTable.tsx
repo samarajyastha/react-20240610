@@ -14,7 +14,7 @@ import Modal from "./Modal";
 const ProductsTable = () => {
   const [sortOrder, setSortOrder] = useState(true);
   const [limit, setLimit] = useState(10);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const [query, setQuery] = useState<ProductQuery>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -32,10 +32,8 @@ const ProductsTable = () => {
     setQuery({ ...query, sort });
   };
 
-  const getLimitedData = (e) => {
-    const limit = e.target.value;
-
-    setLimit(e.target.value);
+  const getLimitedData = (limit: number) => {
+    setLimit(limit);
     setQuery({ ...query, limit });
   };
 
@@ -174,7 +172,7 @@ const ProductsTable = () => {
             name="limit"
             id="limit"
             className="border"
-            onChange={(e) => getLimitedData(e)}
+            onChange={(e) => getLimitedData(parseInt(e.target.value))}
           >
             <option value="10" selected={limit == 10}>
               10
