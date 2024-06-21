@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Product, ProductQuery } from "../../types/product";
-import { createProduct, getAllProducts } from "./productActions";
+import { createProduct, deleteProduct, getAllProducts } from "./productActions";
 
 type ProductState = {
   loading: boolean;
@@ -54,6 +54,19 @@ export const productSlice = createSlice({
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.products = state.products.filter(product=> product.id !=)
+        state.success = true;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading = false;
       });
   },
 });

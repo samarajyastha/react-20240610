@@ -22,4 +22,10 @@ const create = async (data: Product) => {
   return createdProduct;
 };
 
-export { getAll, create };
+const remove = async (id: string) => {
+  const deletedProduct = await api.delete(`/products/${id}`);
+
+  return deletedProduct;
+};
+
+export { getAll, create, remove };
