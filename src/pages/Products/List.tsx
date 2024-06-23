@@ -9,11 +9,11 @@ import { getAllProducts } from "../../redux/products/productActions";
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { loading, success } = useSelector((state: RootState) => state.product);
+  const { loading, query } = useSelector((state: RootState) => state.product);
 
   useEffect(() => {
-    dispatch(getAllProducts({}));
-  }, [dispatch, success]);
+    dispatch(getAllProducts(query));
+  }, [dispatch, query]);
 
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 

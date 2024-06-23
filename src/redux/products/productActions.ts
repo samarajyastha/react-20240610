@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { create, getAll, remove } from "../../api/products";
+import { create, getAll, getById, remove, update } from "../../api/products";
 import { Product, ProductQuery } from "../../types/product";
 import { AxiosError } from "axios";
 
@@ -29,9 +29,11 @@ const createProduct = createAsyncThunk(
 
 const deleteProduct = createAsyncThunk(
   "products/delete",
-  async (id: string, { rejectWithValue }) => {
+  async (id: string, { rejectWithValue, dispatch }) => {
     try {
       const response = await remove(id);
+
+      dispatch(getAllProducts({}));
 
       return response.data;
     } catch (error) {
@@ -42,4 +44,42 @@ const deleteProduct = createAsyncThunk(
   }
 );
 
-export { getAllProducts, createProduct, deleteProduct };
+const getProductById = createAsyncThunk(
+  "products/getById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await getById(id);
+
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      return rejectWithValue(axiosError.response?.data);
+    }
+  }
+);
+
+const updateProduct = createAsyncThunk(
+  "products/update",
+  async (product: Product, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await update(product.id, product);
+
+      dispatch(getProductById(product.id));
+
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError;
+
+      return rejectWithValue(axiosError.response?.data);
+    }
+  }
+);
+
+export {
+  getAllProducts,
+  createProduct,
+  deleteProduct,
+  getProductById,
+  updateProduct,
+};

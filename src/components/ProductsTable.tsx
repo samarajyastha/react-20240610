@@ -4,41 +4,38 @@ import { RootState } from "../redux/rootReducer";
 import { deleteProduct } from "../redux/products/productActions";
 import { AppDispatch } from "../redux/store";
 import { useEffect, useState } from "react";
-import { Product, ProductQuery } from "../types/product";
+import { Product } from "../types/product";
 import { FaTrash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
-import { resetSuccess } from "../redux/products/productSlice";
+import {
+  resetSuccess,
+  setSort,
+  setFilters as setProductFilters,
+} from "../redux/products/productSlice";
 import Modal from "./Modal";
+import ProductsTableLimit from "./ProductsTableLimit";
+import { useNavigate } from "react-router-dom";
 
 const ProductsTable = () => {
-  const [sortOrder, setSortOrder] = useState(true);
-  const [limit, setLimit] = useState(10);
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
-  const [query, setQuery] = useState<ProductQuery>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const dispatch = useDispatch<AppDispatch>();
+
+  const navigate = useNavigate();
 
   const { error, success, products } = useSelector(
     (state: RootState) => state.product
   );
 
   const sortData = (sortKey: string) => {
-    const sort = { [sortKey]: sortOrder ? -1 : 1 } as { [key: string]: 1 | -1 };
-
-    setSortOrder(!sortOrder);
-    setQuery({ ...query, sort });
-  };
-
-  const getLimitedData = (limit: number) => {
-    setLimit(limit);
-    setQuery({ ...query, limit });
+    dispatch(setSort(sortKey));
   };
 
   const getFilteredData = () => {
-    setQuery({ ...query, filters });
+    dispatch(setProductFilters(filters));
   };
 
   const onDeleteProduct = (product: Product) => {
@@ -51,6 +48,10 @@ const ProductsTable = () => {
     setSelectedProduct(null);
   };
 
+  const onEditProduct = (id: string) => {
+    navigate(`/products/edit/${id}`);
+  };
+
   useEffect(() => {
     if (error)
       toast.error(error, {
@@ -58,7 +59,7 @@ const ProductsTable = () => {
       });
 
     if (success) {
-      toast.success("Product deleted successfully.", {
+      toast.success(`Product ${success} successfully.`, {
         autoClose: 1000,
         onClose: () => dispatch(resetSuccess()),
       });
@@ -99,7 +100,7 @@ const ProductsTable = () => {
             id="name"
             placeholder="Filter by name"
             value={filters.name}
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            onChange={(e) => setFilters({ name: e.target.value })}
           />
         </div>
         <div className="py-2">
@@ -109,7 +110,7 @@ const ProductsTable = () => {
             id="brand"
             placeholder="Filter by brand"
             defaultValue={filters.brand}
-            onChange={(e) => setFilters({ ...filters, brand: e.target.value })}
+            onChange={(e) => setFilters({ brand: e.target.value })}
           />
         </div>
         <div className="text-center">
@@ -149,7 +150,10 @@ const ProductsTable = () => {
                 <td className="py-3">{product.category ?? "-"}</td>
                 <td className="py-3">{product.price}</td>
                 <td className="py-3 text-center">
-                  <button className="p-2 bg-blue-500 rounded text-white mx-2">
+                  <button
+                    className="p-2 bg-blue-500 rounded text-white mx-2"
+                    onClick={() => onEditProduct(product.id)}
+                  >
                     <FaPencil />
                   </button>
                   <button
@@ -164,30 +168,7 @@ const ProductsTable = () => {
           </tbody>
         </table>
 
-        <div className="mt-10 text-right">
-          <label htmlFor="limit" className="mr-3">
-            Limit
-          </label>
-          <select
-            name="limit"
-            id="limit"
-            className="border"
-            onChange={(e) => getLimitedData(parseInt(e.target.value))}
-          >
-            <option value="10" selected={limit == 10}>
-              10
-            </option>
-            <option value="20" selected={limit == 20}>
-              20
-            </option>
-            <option value="50" selected={limit == 50}>
-              50
-            </option>
-            <option value="100" selected={limit == 100}>
-              100
-            </option>
-          </select>
-        </div>
+        <ProductsTableLimit />
       </div>
     </div>
   );

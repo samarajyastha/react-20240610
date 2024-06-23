@@ -28,4 +28,16 @@ const remove = async (id: string) => {
   return deletedProduct;
 };
 
-export { getAll, create, remove };
+const getById = async (id: string) => {
+  const product = await api.get(`/products/${id}`);
+
+  return product;
+};
+
+const update = async (id: string, data: Product) => {
+  const product = await api.put(`/products/${id}`, data);
+
+  return product;
+};
+
+export { getAll, create, remove, getById, update };

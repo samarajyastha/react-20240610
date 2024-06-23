@@ -2,17 +2,26 @@ import { useForm } from "react-hook-form";
 import { Product } from "../types/product";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { createProduct } from "../redux/products/productActions";
+import { createProduct, updateProduct } from "../redux/products/productActions";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { resetSuccess } from "../redux/products/productSlice";
+import { useNavigate } from "react-router-dom";
 
-const AddProductForm = () => {
-  const { register, handleSubmit, formState } = useForm<Product>();
+type AddProductFormType = {
+  isEditing?: boolean;
+  product?: Product;
+};
+
+const AddProductForm = ({ isEditing = false, product }: AddProductFormType) => {
+  const { register, handleSubmit, formState } = useForm<Product>({
+    defaultValues: product,
+  });
 
   const { errors } = formState;
 
   const { error, success } = useSelector((state: RootState) => state.product);
+
+  const navigate = useNavigate();
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -20,12 +29,13 @@ const AddProductForm = () => {
     dispatch(createProduct(data));
   };
 
+  const editProduct = async (data: Product) => {
+    dispatch(updateProduct(data));
+  };
+
   useEffect(() => {
     if (success) {
-      toast.success("Product added successfully.", {
-        autoClose: 1000,
-        onClose: () => dispatch(resetSuccess()),
-      });
+      navigate("/products");
     }
 
     if (error) {
@@ -33,12 +43,12 @@ const AddProductForm = () => {
         autoClose: 1000,
       });
     }
-  }, [error, success, dispatch]);
+  }, [error, success, navigate]);
 
   return (
     <div className="flex justify-center my-10">
       <div className="w-3/5 border px-10 py-8 rounded-xl border-dashed">
-        <form onSubmit={handleSubmit(addProduct)}>
+        <form onSubmit={handleSubmit(isEditing ? editProduct : addProduct)}>
           <div className="py-2">
             <label htmlFor="name" className="ml-2 text-sm font-semibold">
               Name
@@ -101,7 +111,7 @@ const AddProductForm = () => {
             <input
               className="py-2 px-8 mt-3 bg-slate-700 rounded text-white cursor-pointer"
               type="submit"
-              value="Add Product"
+              value={isEditing ? "Edit Product" : "Add Product"}
             />
           </div>
         </form>

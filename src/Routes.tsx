@@ -14,6 +14,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import { UnAuthLayout } from "./layouts/UnAuthLayout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import EditProduct from "./pages/Products/Edit";
 
 const Routes = ({ user }: { user: boolean }) => {
   const router = createBrowserRouter(
@@ -30,6 +31,7 @@ const Routes = ({ user }: { user: boolean }) => {
           <Route path="products">
             <Route index element={<ProductList />} />
             <Route path="add" element={<AddProduct />} />
+            <Route path="edit/:id" element={<EditProduct />} />
           </Route>
           <Route path="contact" element={<Contact />} />
         </Route>
