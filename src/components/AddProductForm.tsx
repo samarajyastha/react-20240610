@@ -6,6 +6,7 @@ import { createProduct, updateProduct } from "../redux/products/productActions";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import CategorySelector from "./CategorySelector";
 
 type AddProductFormType = {
   isEditing?: boolean;
@@ -77,22 +78,7 @@ const AddProductForm = ({ isEditing = false, product }: AddProductFormType) => {
             />
             <p className="text-red-500 text-sm m-2">{errors.brand?.message}</p>
           </div>
-          <div className="py-2">
-            <label htmlFor="category" className="ml-2 text-sm font-semibold">
-              Category
-            </label>
-            <input
-              className="w-full border rounded-md py-2 px-3 mt-3"
-              type="text"
-              id="category"
-              {...register("category", {
-                required: "Product category is required.",
-              })}
-            />
-            <p className="text-red-500 text-sm m-2">
-              {errors.category?.message}
-            </p>
-          </div>
+          <CategorySelector register={register} errors={errors} />
           <div className="py-2">
             <label htmlFor="price" className="ml-2 text-sm font-semibold">
               Price

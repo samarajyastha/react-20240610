@@ -12,6 +12,7 @@ const Navbar = ({ user }: { user: boolean }) => {
   const logoutUser = () => {
     dispatch(logout());
   };
+
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     isActive
       ? "bg-blue-700 md:bg-transparent text-white block pl-3 pr-4 py-2 md:text-blue-700 md:p-0 rounded"
@@ -20,7 +21,7 @@ const Navbar = ({ user }: { user: boolean }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
   return (
-    <nav className="border-gray-200 mb-10 py-4 px-5">
+    <nav className="border-gray-200 mb-10 py-4 px-5 sticky top-0 bg-white shadow">
       <div className="w-full mx-auto">
         <div className="mx-2 flex flex-wrap items-center justify-between ">
           <Logo />
