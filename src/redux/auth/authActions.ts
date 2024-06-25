@@ -10,6 +10,8 @@ const loginUser = createAsyncThunk(
     try {
       const response = await login(data);
 
+      localStorage.setItem("authToken", response.data.token);
+
       return response.data;
     } catch (error) {
       const errorWithType = error as AxiosError;
@@ -24,6 +26,8 @@ const registerUser = createAsyncThunk(
   async (data: RegisterInput, { rejectWithValue }) => {
     try {
       const response = await register(data);
+
+      localStorage.setItem("authToken", response.data.token);
 
       return response.data;
     } catch (error) {
