@@ -21,7 +21,7 @@ const Navbar = ({ user }: { user: boolean }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(true);
 
   return (
-    <nav className="border-gray-200 mb-10 py-4 px-5 sticky top-0 bg-white shadow">
+    <nav className="border-gray-200 py-4 px-5 sticky top-0 bg-white shadow">
       <div className="w-full mx-auto">
         <div className="mx-2 flex flex-wrap items-center justify-between ">
           <Logo />
